@@ -1,0 +1,150 @@
+﻿@model WeatherApp.Models.WeatherData
+@{
+    ViewData["Title"] = "Weather App";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background: linear-gradient(to right, #74ebd5, #9face6);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .weather-container {
+            max-width: 650px;
+            margin: 60px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .weather-container:hover {
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .weather-icon {
+            width: 120px;
+            height: auto;
+        }
+
+        .form-control {
+            height: 45px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            font-size: 16px;
+            height: 45px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .weather-details {
+            background-color: #f7f9fc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .weather-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding: 6px 0;
+            border-bottom: 1px dashed #ced4da;
+            font-size: 16px;
+        }
+
+        .weather-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .text-center img {
+            margin-top: 15px;
+        }
+
+        h1, h3, h4 {
+            font-weight: 600;
+        }
+
+        .alert-danger {
+            margin-top: 20px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-container">
+        <h1 class="text-center mb-4">🌦️ Live Weather Info</h1>
+        
+        <form asp-action="Index" method="post">
+            <div class="form-group mb-3">
+                <label for="city" class="form-label">🔍 Search by City</label>
+                <input type="text" id="city" name="city" class="form-control" placeholder="e.g., Dhaka, London, Tokyo" value="@Model?.City" />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Get Weather</button>
+        </form>
+
+        @if (!string.IsNullOrEmpty(ViewBag.Error))
+        {
+            <div class="alert alert-danger">
+                <strong>Error:</strong> @ViewBag.Error
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model?.City))
+        {
+            <div class="weather-details">
+                <div class="text-center mb-4">
+                    <h3>Weather in @Model.City</h3>
+                    <img src="http://openweathermap.org/img/wn/@($"{Model.Icon}@2x.png")" alt="Weather icon" class="weather-icon" />
+                    <h4 class="text-primary mt-3">@Model.Temperature.ToString("F1")°C</h4>
+                    <p class="text-muted">@Model.Description</p>
+                </div>
+
+                <div class="weather-detail-row">
+                    <strong>Feels Like:</strong>
+                    <span>@Model.FeelsLike.ToString("F1")°C</span>
+                </div>
+                <div class="weather-detail-row">
+                    <strong>Humidity:</strong>
+                    <span>@Model.Humidity%</span>
+                </div>
+                <div class="weather-detail-row">
+                    <strong>Wind:</strong>
+                    <span>@Model.WindSpeed.ToString("F1") m/s @Model.WindDirectionText (@Model.WindDescription)</span>
+                </div>
+                <div class="weather-detail-row">
+                    <strong>Pressure:</strong>
+                    <span>@Model.Pressure.ToString("F0") hPa</span>
+                </div>
+                <div class="weather-detail-row">
+                    <strong>UV Index:</strong>
+                    <span>@Model.UVIndex.ToString("F1")</span>
+                </div>
+                <div class="weather-detail-row">
+                    <strong>Dew Point:</strong>
+                    <span>@Model.DewPoint.ToString("F1")°C</span>
+                </div>
+                <div class="weather-detail-row">
+                    <strong>Visibility:</strong>
+                    <span>@Model.Visibility.ToString("F1") km</span>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+</html>
